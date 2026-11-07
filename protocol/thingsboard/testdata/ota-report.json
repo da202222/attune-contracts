@@ -1,0 +1,103 @@
+{
+  "fixture": "attune.thingsboard.ota-fixture/v1",
+  "protocol": "attune.thingsboard.desired-version/v1",
+  "message": "report",
+  "cases": [
+    {
+      "name": "observe_names_the_profile_writer",
+      "call": "admit",
+      "schema_valid": true,
+      "input": {
+        "kind": "observe",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "profile": "openwrt",
+        "device_id": "11111111-1111-4111-8111-111111111111"
+      },
+      "expect": {
+        "ok": true,
+        "effect": "observed",
+        "writer": "openwrt_signed_feed"
+      }
+    },
+    {
+      "name": "tb_updated_is_not_acceptance",
+      "call": "admit",
+      "schema_valid": true,
+      "input": {
+        "kind": "updated",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "profile": "linux-docker",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "sequence": 1,
+        "previous_sequence": 0
+      },
+      "expect": {
+        "ok": false,
+        "error": "tb_status_not_acceptance",
+        "effect": "not_applied"
+      }
+    },
+    {
+      "name": "tb_download_does_not_fetch",
+      "call": "admit",
+      "schema_valid": true,
+      "input": {
+        "kind": "download",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "profile": "linux-docker",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "sequence": 1,
+        "previous_sequence": 0
+      },
+      "expect": {
+        "ok": false,
+        "error": "package_not_fetched",
+        "effect": "not_applied"
+      }
+    },
+    {
+      "name": "tb_checksum_is_not_acceptance",
+      "call": "admit",
+      "schema_valid": true,
+      "input": {
+        "kind": "checksum",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "profile": "linux-docker",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "sequence": 1,
+        "previous_sequence": 0
+      },
+      "expect": {
+        "ok": false,
+        "error": "tb_checksum_not_acceptance",
+        "effect": "not_applied"
+      }
+    },
+    {
+      "name": "assignment_with_in_order_report_is_classified",
+      "call": "project",
+      "schema_valid": true,
+      "input": {
+        "intent": "assign",
+        "profile": "linux-docker",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "desired_version": "0.8.0",
+        "writer": "oci_digest",
+        "package_id": "attune-client",
+        "report": {
+          "kind": "updated",
+          "intent_id": "22222222-2222-4222-8222-222222222222",
+          "profile": "linux-docker",
+          "device_id": "11111111-1111-4111-8111-111111111111",
+          "sequence": 1,
+          "previous_sequence": 0
+        }
+      },
+      "expect": {
+        "reason": "writer_not_called",
+        "report_classified": true
+      }
+    }
+  ]
+}

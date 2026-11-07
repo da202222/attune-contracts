@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/capability-advertisement.v1.schema.json",
+  "title": "Attune CapabilityAdvertisement v1",
+  "description": "Edge-owned availability only. Server policy fields are forbidden.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "name",
+    "version",
+    "available",
+    "unavailable_reason",
+    "local_confirmation_required",
+    "observed_at",
+    "implementation_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z0-9_-]+)+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "available": {
+      "type": "boolean"
+    },
+    "unavailable_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 240
+    },
+    "local_confirmation_required": {
+      "type": "boolean"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "implementation_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 160
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "available": {
+            "const": true
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "then": {
+        "properties": {
+          "unavailable_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "available": {
+            "const": false
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "then": {
+        "properties": {
+          "unavailable_reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        }
+      }
+    }
+  ]
+}

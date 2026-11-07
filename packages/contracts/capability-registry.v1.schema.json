@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/capability-registry.v1.schema.json",
+  "title": "Attune Capability Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "registry_version",
+    "authority_model",
+    "workspace_actions",
+    "capabilities"
+  ],
+  "properties": {
+    "schema": {
+      "const": "attune.contracts.capability-registry/v1"
+    },
+    "registry_version": {
+      "const": 1
+    },
+    "authority_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_source",
+        "availability_source",
+        "registry_grants_runtime_authority"
+      ],
+      "properties": {
+        "policy_source": {
+          "const": "server_definition"
+        },
+        "availability_source": {
+          "const": "edge_advertisement"
+        },
+        "registry_grants_runtime_authority": {
+          "const": false
+        }
+      }
+    },
+    "workspace_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^device\\.[a-z][a-z0-9_.-]*$"
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version",
+          "target_kind",
+          "class",
+          "required_action",
+          "data_class",
+          "side_effect",
+          "idempotency_required",
+          "completion_evidence"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$",
+            "maxLength": 160
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "target_kind": {
+            "type": "string",
+            "enum": [
+              "android_car",
+              "router_node",
+              "router_line",
+              "windows_device"
+            ]
+          },
+          "class": {
+            "type": "string",
+            "enum": [
+              "READ",
+              "INTERACTION",
+              "OPERATE",
+              "CONFIG",
+              "UPDATE",
+              "PRIVILEGED"
+            ]
+          },
+          "required_action": {
+            "type": "string",
+            "pattern": "^device\\.[a-z][a-z0-9_.-]*$"
+          },
+          "data_class": {
+            "type": "string",
+            "enum": [
+              "NON_SENSITIVE",
+              "DEVICE_METADATA",
+              "PERSONAL_DATA",
+              "LOCATION",
+              "COMMUNICATION_CONTENT"
+            ]
+          },
+          "side_effect": {
+            "type": "string",
+            "enum": [
+              "READ_ONLY",
+              "BOUNDED_WRITE"
+            ]
+          },
+          "idempotency_required": {
+            "type": "boolean"
+          },
+          "completion_evidence": {
+            "type": "string",
+            "enum": [
+              "READ_RESPONSE",
+              "DEVICE_TRUTH",
+              "TERMINAL_ACK"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

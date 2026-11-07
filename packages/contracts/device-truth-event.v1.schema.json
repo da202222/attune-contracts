@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/device-truth-event.v1.schema.json",
+  "title": "Attune DeviceTruthEvent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "target_device_id",
+    "parent_device_id",
+    "capability",
+    "truth_type",
+    "state",
+    "revision",
+    "observed_at",
+    "command_id",
+    "session_epoch",
+    "evidence_revision",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "target_device_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "parent_device_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "capability": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z0-9_-]+)+$"
+    },
+    "truth_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.:-]{0,95}$"
+    },
+    "state": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{0,63}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "command_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "session_epoch": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "evidence_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 160
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

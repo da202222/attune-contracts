@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/target-ref.v1.schema.json",
+  "title": "Attune TargetRef v1",
+  "description": "Canonical typed reference for a remotely addressed Attune endpoint. This contract identifies a target; it grants no authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "parent_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "android_car",
+        "router_node",
+        "router_line",
+        "windows_device"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "router_line"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "parent_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "parent_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "attune.thingsboard.ota-protocol/v1",
+  "title": "ThingsBoard OTA assignment / cancel / report protocol (frozen from existing code)",
+  "description": "冻结 accounts/tb_desired_version.py 与 accounts/tb_ota_projection.py 已有的协议，不新增语义。assignment 与 cancel 共用一个请求形状，intent 区分；report 只被分类，不会下发、安装或接受。v1 没有 deadline/过期字段，也没有包 URL：任何未知字段都被拒绝。",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "profile": {
+      "enum": [
+        "android-car",
+        "windows",
+        "openwrt",
+        "linux-docker",
+        "router",
+        "router-node",
+        "router-line"
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent",
+        "profile",
+        "device_id",
+        "intent_id",
+        "desired_version",
+        "writer",
+        "package_id",
+        "report"
+      ],
+      "properties": {
+        "intent": {
+          "enum": [
+            "assign",
+            "cancel"
+          ]
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "device_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "intent_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "desired_version": {
+          "type": "string",
+          "pattern": "^[0-9]{1,5}(?:\\.[0-9]{1,5}){1,3}$"
+        },
+        "writer": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]{1,64}$"
+        },
+        "package_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+        },
+        "report": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/report"
+            }
+          ]
+        }
+      }
+    },
+    "report": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "intent_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "observe"
+            },
+            "intent_id": {
+              "$ref": "#/$defs/uuid"
+            },
+            "profile": {
+              "type": "string"
+            },
+            "device_id": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "intent_id",
+            "profile",
+            "device_id",
+            "sequence",
+            "previous_sequence"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "assign",
+                "checksum",
+                "download",
+                "interrupted",
+                "rollback",
+                "signature",
+                "space",
+                "updated"
+              ]
+            },
+            "intent_id": {
+              "$ref": "#/$defs/uuid"
+            },
+            "profile": {
+              "type": "string"
+            },
+            "device_id": {
+              "$ref": "#/$defs/uuid"
+            },
+            "sequence": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 1
+            },
+            "previous_sequence": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/report"
+    }
+  ],
+  "x-attune": {
+    "protocol": "attune.thingsboard.desired-version/v1",
+    "profiles": [
+      "android-car",
+      "windows",
+      "openwrt",
+      "linux-docker",
+      "router",
+      "router-node",
+      "router-line"
+    ],
+    "not_installable": [
+      "router-line"
+    ],
+    "writers": {
+      "android-car": "forgejo_fdf_site",
+      "windows": "windows_signer",
+      "openwrt": "openwrt_signed_feed",
+      "linux-docker": "oci_digest",
+      "router": "existing_host_updater",
+      "router-node": "existing_host_updater"
+    },
+    "report_errors": {
+      "assign": "writer_closed",
+      "download": "package_not_fetched",
+      "updated": "tb_status_not_acceptance",
+      "checksum": "tb_checksum_not_acceptance",
+      "signature": "signature_rejected",
+      "space": "space_unavailable",
+      "rollback": "rollback_not_accepted",
+      "interrupted": "transport_interrupted"
+    },
+    "sequence_limit": 100000,
+    "identity": {
+      "intent_id": "一次期望版本意图的稳定 ID，assignment、cancel 与 report 都引用它",
+      "device_id": "目标设备",
+      "profile": "决定唯一写入器",
+      "generation": "report 的 sequence/previous_sequence；相等为重复，不相接为乱序"
+    },
+    "distinct_states": {
+      "tb_ack": "TB 收到 attribute 不代表任何东西被写入",
+      "updated": "tb_status_not_acceptance",
+      "downloaded": "package_not_fetched",
+      "installed": "只有本 Profile 现有报告器描述的本机结果",
+      "accepted": "本层永远为 false"
+    },
+    "always_false": [
+      "assign",
+      "install",
+      "accepted",
+      "retry",
+      "legacy_replay"
+    ]
+  }
+}

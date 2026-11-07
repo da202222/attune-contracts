@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/capability-descriptor.v1.schema.json",
+  "title": "Attune CapabilityDescriptor v1",
+  "description": "Server policy joined with Edge availability.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target_device_id",
+    "name",
+    "version",
+    "class",
+    "available",
+    "unavailable_reason",
+    "required_action",
+    "requires_confirmation",
+    "data_class",
+    "policy_source",
+    "availability_source",
+    "observed_at",
+    "implementation_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "target_device_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z0-9_-]+)+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "class": {
+      "enum": [
+        "READ",
+        "INTERACTION",
+        "OPERATE",
+        "CONFIG",
+        "UPDATE",
+        "PRIVILEGED"
+      ]
+    },
+    "available": {
+      "type": "boolean"
+    },
+    "unavailable_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 240
+    },
+    "required_action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 96
+    },
+    "requires_confirmation": {
+      "type": "boolean"
+    },
+    "data_class": {
+      "enum": [
+        "NON_SENSITIVE",
+        "DEVICE_METADATA",
+        "PERSONAL_DATA",
+        "LOCATION",
+        "COMMUNICATION_CONTENT"
+      ]
+    },
+    "policy_source": {
+      "const": "server_definition"
+    },
+    "availability_source": {
+      "const": "edge_advertisement"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "implementation_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 160
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "available": {
+            "const": true
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "then": {
+        "properties": {
+          "unavailable_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "available": {
+            "const": false
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "then": {
+        "properties": {
+          "unavailable_reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        }
+      }
+    }
+  ]
+}

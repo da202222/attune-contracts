@@ -1,0 +1,70 @@
+{
+  "fixture": "attune.thingsboard.ota-fixture/v1",
+  "protocol": "attune.thingsboard.desired-version/v1",
+  "message": "assignment",
+  "cases": [
+    {
+      "name": "assign_linux_docker_names_the_oci_digest_writer",
+      "call": "project",
+      "schema_valid": true,
+      "input": {
+        "intent": "assign",
+        "profile": "linux-docker",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "desired_version": "0.8.0",
+        "writer": "oci_digest",
+        "package_id": "attune-client",
+        "report": null
+      },
+      "expect": {
+        "reason": "writer_not_called",
+        "named_writer": "oci_digest",
+        "second_writer": false,
+        "report_classified": false
+      }
+    },
+    {
+      "name": "assign_android_car_names_the_fdf_site_writer",
+      "call": "project",
+      "schema_valid": true,
+      "input": {
+        "intent": "assign",
+        "profile": "android-car",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "desired_version": "0.8.0",
+        "writer": "forgejo_fdf_site",
+        "package_id": "attune-client",
+        "report": null
+      },
+      "expect": {
+        "reason": "writer_not_called",
+        "named_writer": "forgejo_fdf_site",
+        "second_writer": false,
+        "report_classified": false
+      }
+    },
+    {
+      "name": "assign_router_node_uses_the_existing_host_updater",
+      "call": "project",
+      "schema_valid": true,
+      "input": {
+        "intent": "assign",
+        "profile": "router-node",
+        "device_id": "11111111-1111-4111-8111-111111111111",
+        "intent_id": "22222222-2222-4222-8222-222222222222",
+        "desired_version": "0.8.0",
+        "writer": "existing_host_updater",
+        "package_id": "attune-client",
+        "report": null
+      },
+      "expect": {
+        "reason": "writer_not_called",
+        "named_writer": "existing_host_updater",
+        "second_writer": false,
+        "report_classified": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/capability-result.v1.schema.json",
+  "title": "Attune CapabilityResult v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "command_id",
+    "command_digest",
+    "state",
+    "truth",
+    "observed_at",
+    "result",
+    "error_code",
+    "evidence_revision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "command_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "command_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "state": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT"
+      ]
+    },
+    "truth": {
+      "enum": [
+        "MATCH",
+        "UNKNOWN",
+        "NEEDS_RECONCILIATION",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "error_code": {
+      "enum": [
+        null,
+        "UNSUPPORTED",
+        "UNAVAILABLE",
+        "PERMISSION_REQUIRED",
+        "INVALID_ARGUMENT",
+        "EXPIRED",
+        "DUPLICATE",
+        "IDEMPOTENCY_CONFLICT",
+        "DEVICE_OFFLINE",
+        "DEVICE_BUSY",
+        "TIMEOUT",
+        "CANCELLED",
+        "EXECUTION_FAILED",
+        "TRUTH_MISMATCH",
+        "STALE_SESSION"
+      ]
+    },
+    "evidence_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 160
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "SUCCEEDED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "truth": {
+            "const": "MATCH"
+          },
+          "error_code": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "FAILED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error_code": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "CANCELLED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error_code": {
+            "const": "CANCELLED"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "TIMED_OUT"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "error_code": {
+            "const": "TIMEOUT"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "error_code": {
+            "const": "TRUTH_MISMATCH"
+          }
+        },
+        "required": [
+          "error_code"
+        ]
+      },
+      "then": {
+        "properties": {
+          "truth": {
+            "const": "NEEDS_RECONCILIATION"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "FAILED"
+          },
+          "error_code": {
+            "enum": [
+              "UNSUPPORTED",
+              "UNAVAILABLE",
+              "PERMISSION_REQUIRED",
+              "INVALID_ARGUMENT",
+              "EXPIRED",
+              "DUPLICATE",
+              "IDEMPOTENCY_CONFLICT",
+              "DEVICE_OFFLINE",
+              "DEVICE_BUSY"
+            ]
+          }
+        },
+        "required": [
+          "state",
+          "error_code"
+        ]
+      },
+      "then": {
+        "properties": {
+          "truth": {
+            "const": "NOT_APPLICABLE"
+          },
+          "result": {
+            "const": null
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "schema": "attune.contracts.capability-registry/v1",
+  "registry_version": 1,
+  "authority_model": {
+    "policy_source": "server_definition",
+    "availability_source": "edge_advertisement",
+    "registry_grants_runtime_authority": false
+  },
+  "workspace_actions": [
+    "device.read",
+    "device.operate",
+    "device.config",
+    "device.update"
+  ],
+  "capabilities": [
+    {
+      "name": "router.status.read",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.network.read",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.cellular.read",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.cellular.reconnect",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.route.read",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.route.switch",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "CONFIG",
+      "required_action": "device.config",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.telephony.state",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.telephony.dial",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.telephony.answer",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.telephony.hangup",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.telephony.dtmf",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.telephony.sms.send",
+      "version": 1,
+      "target_kind": "router_line",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.gnss.read",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "LOCATION",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "router.gnss.start",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "LOCATION",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "router.gnss.stop",
+      "version": 1,
+      "target_kind": "router_node",
+      "class": "OPERATE",
+      "required_action": "device.operate",
+      "data_class": "LOCATION",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "DEVICE_TRUTH"
+    },
+    {
+      "name": "car.status.read",
+      "version": 1,
+      "target_kind": "android_car",
+      "class": "READ",
+      "required_action": "device.read",
+      "data_class": "DEVICE_METADATA",
+      "side_effect": "READ_ONLY",
+      "idempotency_required": false,
+      "completion_evidence": "READ_RESPONSE"
+    },
+    {
+      "name": "car.tts.speak",
+      "version": 1,
+      "target_kind": "android_car",
+      "class": "INTERACTION",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "TERMINAL_ACK"
+    },
+    {
+      "name": "car.notification.show",
+      "version": 1,
+      "target_kind": "android_car",
+      "class": "INTERACTION",
+      "required_action": "device.operate",
+      "data_class": "COMMUNICATION_CONTENT",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "TERMINAL_ACK"
+    },
+    {
+      "name": "car.ui.open",
+      "version": 1,
+      "target_kind": "android_car",
+      "class": "INTERACTION",
+      "required_action": "device.operate",
+      "data_class": "NON_SENSITIVE",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "TERMINAL_ACK"
+    },
+    {
+      "name": "car.navigation.open",
+      "version": 1,
+      "target_kind": "android_car",
+      "class": "INTERACTION",
+      "required_action": "device.operate",
+      "data_class": "LOCATION",
+      "side_effect": "BOUNDED_WRITE",
+      "idempotency_required": true,
+      "completion_evidence": "TERMINAL_ACK"
+    }
+  ]
+}

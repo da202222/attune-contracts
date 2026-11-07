@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://attune.local/contracts/capability-command.v1.schema.json",
+  "title": "Attune CapabilityCommand v1",
+  "description": "Edge execution envelope. Actor/workspace authorization fields are intentionally absent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "command_id",
+    "idempotency_key",
+    "target_device_id",
+    "capability",
+    "capability_version",
+    "arguments",
+    "requested_at",
+    "expires_at",
+    "session_epoch",
+    "confirmation_policy",
+    "command_digest",
+    "digest_algorithm",
+    "intent_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "command_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{16,128}$"
+    },
+    "target_device_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "capability": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z0-9_-]+)+$"
+    },
+    "capability_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "arguments": {
+      "type": "object"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "session_epoch": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "confirmation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "reason_code"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "reason_code": {
+          "enum": [
+            null,
+            "SERVER_POLICY"
+          ]
+        }
+      }
+    },
+    "command_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "digest_algorithm": {
+      "const": "hmac-sha256-jcs-rfc8785-v1"
+    },
+    "intent_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}
