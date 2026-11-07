@@ -10,6 +10,10 @@ The commercial server, customer data, production configuration, device identitie
 - `scripts/contracts.py` checks that kernel with the Python standard library.
 - `protocol/thingsboard/ota_protocol.schema.json` is the frozen OTA assignment, cancel, and report schema. The bytes match the private tree at `067084cb753558d11e43773554f18df83fa07d21`; only the directory name changed.
 - `protocol/thingsboard/testdata/` uses synthetic UUIDs and versions. Those cases describe the protocol. They do not call a reporter or install anything.
+- `docs/content-sync-protocol.md`, `docs/remote-cloud-protocol.md`, and `docs/remote-protocol.md` are the reviewed wire contracts. `docs/fixtures/content-sync/v1/` holds their synthetic examples. Phone numbers there are the reserved `+15550100xxx` range.
+- `android/car/tb_ota_report.py`, `android/car/tb_ota_status.py`, and the Docker, OpenWrt, and Windows reporter/status modules are local adapters. They classify a result the updater already finished. They do not fetch, assign, or publish a package.
+
+Product topology notes linked from those protocol documents stay in the private repository. The Windows health-entry module is not part of the public allowlist and is not here.
 
 ## Check
 
